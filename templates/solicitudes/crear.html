@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Crear Solicitud de Compra{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="card-dashboard solicitud-form">
+                <div class="card-header border-bottom form-card">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle text-primary me-2"></i>
+                        Cargar Nueva Solicitud de Compra
+                    </h4>
+                    <p class="text-muted mb-0 mt-2">Complete el formulario para crear una nueva solicitud de compra</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" id="solicitudForm">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Por favor, corrija los errores en el formulario.
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="small mt-1">{{ field.label }}: {{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row form-spacing">
+                            <!-- Número de Solicitud -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.numero_sc.id_for_label }}" class="form-label fw-semibold required">
+                                    Número de Solicitud
+                                </label>
+                                {{ form.numero_sc }}
+                                <div class="form-text">{{ form.numero_sc.help_text }}</div>
+                                {% if form.numero_sc.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.numero_sc.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Prioridad -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.prioridad.id_for_label }}" class="form-label fw-semibold required">
+                                    Prioridad
+                                </label>
+                                {{ form.prioridad }}
+                                <div class="form-text">Seleccione el nivel de urgencia</div>
+                                {% if form.prioridad.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.prioridad.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Codificación de Compra y Analítica en la misma fila -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.codificacion.id_for_label }}" class="form-label fw-semibold required">
+                                    Codificación de Compra
+                                </label>
+                                {{ form.codificacion }}
+                                <div class="form-text">{{ form.codificacion.help_text }}</div>
+                                {% if form.codificacion.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.codificacion.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.analitica.id_for_label }}" class="form-label fw-semibold required">
+                                    Analítica
+                                </label>
+                                {{ form.analitica }}
+                                <div class="form-text">{{ form.analitica.help_text }}</div>
+                                {% if form.analitica.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.analitica.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Archivo PDF -->
+                            <div class="col-12 mb-3">
+                                <label for="{{ form.archivo_pdf.id_for_label }}" class="form-label fw-semibold required">
+                                    Archivo PDF
+                                </label>
+                                {{ form.archivo_pdf }}
+                                <div class="form-text">Adjunte el documento PDF de la solicitud. Solo se permiten archivos PDF.</div>
+                                {% if form.archivo_pdf.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.archivo_pdf.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="col-12 mb-4">
+                                <label for="{{ form.descripcion.id_for_label }}" class="form-label fw-semibold required">
+                                    Descripción Detallada
+                                </label>
+                                {{ form.descripcion }}
+                                <div class="form-text">Describa detalladamente los productos o servicios que necesita.</div>
+                                {% if form.descripcion.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.descripcion.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4 form-actions">
+                            <a href="{% url 'solicitudes:lista_solicitudes' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Mis Solicitudes
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Crear Solicitud
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('solicitudForm');
+    
+    // Elementos del formulario
+    const numeroScInput = document.getElementById('{{ form.numero_sc.id_for_label }}');
+    const prioridadSelect = document.getElementById('{{ form.prioridad.id_for_label }}');
+    const codificacionSelect = document.getElementById('{{ form.codificacion.id_for_label }}');
+    const analiticaInput = document.getElementById('{{ form.analitica.id_for_label }}');
+    const archivoInput = document.getElementById('{{ form.archivo_pdf.id_for_label }}');
+
+    // Validar número de solicitud único en tiempo real
+    if (numeroScInput) {
+        let timeoutId;
+        
+        numeroScInput.addEventListener('input', function() {
+            // Convertir a mayúsculas y eliminar espacios
+            this.value = this.value.toUpperCase().replace(/\s+/g, '');
+            
+            // Limpiar timeout anterior
+            clearTimeout(timeoutId);
+            
+            // Validar después de que el usuario deje de escribir
+            timeoutId = setTimeout(() => {
+                const numeroSc = this.value.trim();
+                if (numeroSc && numeroSc.length >= 3) {
+                    // Hacer petición AJAX para verificar si existe
+                    fetch(`/solicitudes/verificar-numero/?numero_sc=${encodeURIComponent(numeroSc)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.existe) {
+                                this.setCustomValidity('Este número de solicitud ya existe. Por favor, use otro.');
+                                this.classList.add('is-invalid');
+                            } else {
+                                this.setCustomValidity('');
+                                this.classList.remove('is-invalid');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al verificar número:', error);
+                        });
+                }
+            }, 500);
+        });
+
+        // Validar formato básico
+        numeroScInput.addEventListener('blur', function() {
+            const numeroSc = this.value.trim();
+            if (numeroSc && !numeroSc.startsWith('SC-')) {
+                this.setCustomValidity('El número debe comenzar con "SC-"');
+                this.classList.add('is-invalid');
+            } else {
+                this.setCustomValidity('');
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+
+    // Estilizar la prioridad seleccionada
+    if (prioridadSelect) {
+        prioridadSelect.addEventListener('change', function() {
+            // Remover clases anteriores
+            this.classList.remove('prioridad-baja', 'prioridad-media', 'prioridad-alta');
+            
+            // Agregar clase según la prioridad seleccionada
+            switch(this.value) {
+                case 'baja':
+                    this.classList.add('prioridad-baja');
+                    break;
+                case 'media':
+                    this.classList.add('prioridad-media');
+                    break;
+                case 'alta':
+                    this.classList.add('prioridad-alta');
+                    break;
+            }
+        });
+
+        // Aplicar estilo inicial
+        if (prioridadSelect.value) {
+            prioridadSelect.dispatchEvent(new Event('change'));
+        }
+    }
+
+    // Convertir analítica a mayúsculas automáticamente
+    if (analiticaInput) {
+        analiticaInput.addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        
+        // Validar formato en tiempo real
+        analiticaInput.addEventListener('blur', function() {
+            const pattern = /^MX\d{7}$/;
+            if (this.value && !pattern.test(this.value)) {
+                this.setCustomValidity('El formato debe ser MX seguido de 7 números. Ejemplo: MX1234567');
+                this.classList.add('is-invalid');
+            } else {
+                this.setCustomValidity('');
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+    
+    // Validar archivo PDF
+    if (archivoInput) {
+        archivoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const fileType = file.type;
+                if (fileType !== 'application/pdf') {
+                    this.setCustomValidity('Solo se permiten archivos PDF');
+                    this.value = '';
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity('');
+                    this.classList.remove('is-invalid');
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

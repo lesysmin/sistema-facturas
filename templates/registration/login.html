@@ -1,0 +1,692 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema De Gestión Organizacional y Control De Proyectos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1a3dc2;
+            --dark-blue: #152c8a;
+            --light-blue: #d0e1ff;
+            --light-gray: #f8fafc;
+            --medium-gray: #6b7280;
+            --border-gray: #e5e7eb;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            height: 100%;
+            overflow: auto;
+        }
+        
+        .login-fullscreen {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        /* ✅ Panel Izquierdo - Información con imagen de fondo */
+        .login-info-panel {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(26, 61, 194, 0.7) 0%, rgba(21, 44, 138, 0.6) 100%),
+                        url('{% static "images/fondo sistema.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--white);
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.05;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--white) 2px, transparent 0),
+                radial-gradient(circle at 80% 70%, var(--white) 2px, transparent 0);
+            background-size: 60px 60px;
+            animation: floatPattern 20s infinite linear;
+        }
+        
+        .login-info-content {
+            max-width: 480px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        /* Logo con imagen estática de Django */
+        .company-logo {
+            margin-bottom: 2rem;
+            text-align: left;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-image {
+            max-width: 280px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            display: block;
+        }
+        
+        .system-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .system-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+        
+        .features-list li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: transform 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .features-list li:hover {
+            transform: translateX(10px);
+        }
+        
+        .features-list li i {
+            margin-right: 1rem;
+            opacity: 0.95;
+            font-size: 1.1rem;
+            width: 24px;
+            transition: transform 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .features-list li:hover i {
+            transform: scale(1.2);
+        }
+        
+        /* ✅ Panel Derecho - Formulario con efectos */
+        .login-form-panel {
+            flex: 0 0 500px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            animation: slideInRight 0.8s ease-out;
+            overflow-y: auto;
+        }
+        
+        .login-form-container {
+            width: 100%;
+            max-width: 380px;
+            padding: 1rem 0;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+       
+        
+        .form-icon:hover {
+            transform: scale(1.05) rotate(5deg);
+            border-color: var(--primary-blue);
+        }
+        
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-subtitle {
+            color: var(--medium-gray);
+            font-size: 1rem;
+        }
+        
+        /* ✅ Campos de formulario con efectos hover */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 0.75rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .form-control {
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.1rem 1.5rem 1.1rem 3rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            height: 56px;
+            width: 100%;
+            background: var(--white);
+        }
+        
+        /* ✅ Efectos hover en campos */
+        .form-control:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(26, 61, 194, 0.15);
+            transform: translateY(-2px);
+            outline: none;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .form-control:focus + .input-icon {
+            color: var(--primary-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .form-control::placeholder {
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus::placeholder {
+            opacity: 0.5;
+            transform: translateX(5px);
+        }
+        
+        /* ✅ Botón con sombra y elevación */
+        .btn-login {
+            background: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 1.1rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+            height: 56px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(26, 61, 194, 0.25);
+        }
+        
+        .btn-login:hover {
+            background: var(--dark-blue);
+            border-color: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(26, 61, 194, 0.35);
+        }
+        
+        .btn-login:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(26, 61, 194, 0.3);
+        }
+        
+        /* Efecto de ripple */
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        .btn-login:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* ✅ Alertas con efectos */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        
+        .system-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-gray);
+        }
+        
+        .footer-text {
+            color: var(--medium-gray);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* ✅ Animaciones */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes floatPattern {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-60px) rotate(360deg); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .form-group {
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.3s; }
+        .btn-login { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ✅ Responsive - Mejoras para móviles */
+        @media (max-width: 1024px) {
+            .login-fullscreen {
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            
+            .login-info-panel {
+                flex: 0 0 auto;
+                padding: 2rem 1.5rem;
+                min-height: 40vh;
+                background: linear-gradient(135deg, rgba(26, 61, 194, 0.9) 0%, rgba(21, 44, 138, 0.9) 100%),
+                            url('{% static "images/fondo sistema.jpg" %}');
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .login-form-panel {
+                flex: 1;
+                width: 100%;
+                padding: 1.5rem;
+                min-height: 60vh;
+            }
+            
+            .logo-image {
+                max-width: 220px;
+            }
+            
+            .system-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .login-info-panel {
+                min-height: 35vh;
+                padding: 1.5rem;
+                background: linear-gradient(135deg, rgba(26, 61, 194, 0.95) 0%, rgba(21, 44, 138, 0.95) 100%),
+                            url('{% static "images/fondo sistema.jpg" %}');
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .login-form-panel {
+                min-height: 65vh;
+                padding: 1.5rem 1rem;
+            }
+            
+            .login-form-container {
+                padding: 0.5rem 0;
+            }
+            
+            .form-header {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 1.7rem;
+            }
+            
+            .form-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .system-title {
+                font-size: 1.5rem;
+            }
+            
+            .system-subtitle {
+                font-size: 1rem;
+            }
+            
+            .features-list li {
+                font-size: 0.9rem;
+                margin-bottom: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-info-panel {
+                min-height: 30vh;
+                padding: 1rem;
+                background: linear-gradient(135deg, rgba(26, 61, 194, 0.95) 0%, rgba(21, 44, 138, 0.95) 100%);
+                /* En móviles muy pequeños, podemos eliminar la imagen para mejor rendimiento */
+            }
+            
+            .login-form-panel {
+                min-height: 70vh;
+                padding: 1rem;
+            }
+            
+            .form-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.3rem;
+            }
+            
+            .form-control {
+                padding: 1rem 1.25rem 1rem 2.5rem;
+                height: 50px;
+            }
+            
+            .btn-login {
+                height: 50px;
+                padding: 1rem 1.5rem;
+            }
+            
+            .system-title {
+                font-size: 1.3rem;
+            }
+            
+            .logo-image {
+                max-width: 180px;
+            }
+        }
+        
+        /* Ajustes específicos para navegadores móviles */
+        @media (max-height: 700px) and (max-width: 768px) {
+            .login-info-panel {
+                min-height: 30vh;
+                padding: 1rem;
+            }
+            
+            .login-form-panel {
+                min-height: 70vh;
+                padding: 1rem;
+            }
+            
+            .login-form-container {
+                padding: 0;
+            }
+            
+            .form-header {
+                margin-bottom: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .system-footer {
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ✅ Pantalla dividida -->
+    <div class="login-fullscreen">
+        <!-- Panel Izquierdo - Información con imagen de fondo -->
+        <div class="login-info-panel">
+            <div class="background-pattern"></div>
+            <div class="login-info-content">
+                <!-- Logo con imagen estática de Django -->
+                <div class="company-logo">
+                    <img src="{% static 'images/logo revergy.png' %}" alt="Revergy Logo" class="logo-image">
+                </div>
+                
+                <h1 class="system-title">
+                    Sistema de Gestión Organizacional<br>y Control De Proyectos
+                </h1>
+                
+                <p class="system-subtitle">
+                    Plataforma integral para la gestión completa 
+                    de compras, proveedores y facturación electrónica.
+                </p>
+                
+            </div>
+        </div>
+
+        <!-- Panel Derecho - Formulario -->
+        <div class="login-form-panel">
+            <div class="login-form-container">
+                <!-- Header del Formulario -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="form-title">Iniciar Sesión</h2>
+                    <p class="form-subtitle">Ingresa tus credenciales para continuar</p>
+                </div>
+
+                <!-- Mensajes de Error -->
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Usuario o contraseña incorrectos
+                </div>
+                {% endif %}
+
+                <!-- Formulario -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            Usuario
+                        </label>
+                        <div class="input-container">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" 
+                                   name="username" 
+                                   class="form-control" 
+                                   id="username" 
+                                   required
+                                   placeholder="nombre.usuario"
+                                   autocomplete="username"
+                                   autofocus>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            Contraseña
+                        </label>
+                        <div class="input-container">
+                            <i class="fas fa-key input-icon"></i>
+                            <input type="password" 
+                                   name="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   required
+                                   placeholder="••••••••"
+                                   autocomplete="current-password">
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="next" value="{{ next|default:'/' }}">
+                    
+                    <button type="submit" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Acceder al Sistema
+                    </button>
+                </form>
+
+                <!-- Footer -->
+                <div class="system-footer">
+                    <p class="footer-text">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Sistema Seguro • v2.0
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ✅ Efectos de interacción
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus automático con delay
+            setTimeout(() => {
+                const usernameField = document.getElementById('username');
+                if (usernameField) {
+                    usernameField.focus();
+                }
+            }, 800);
+            
+            // Efectos en campos de formulario
+            const formControls = document.querySelectorAll('.form-control');
+            formControls.forEach(control => {
+                control.addEventListener('mouseenter', function() {
+                    if (!this.matches(':focus')) {
+                        this.style.transform = 'translateY(-2px)';
+                    }
+                });
+                
+                control.addEventListener('mouseleave', function() {
+                    if (!this.matches(':focus')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            // Efecto de carga progresiva
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 200);
+        });
+        
+        // ✅ Efecto de ripple en el botón
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-login')) {
+                // Reset animation
+                e.target.style.animation = 'none';
+                setTimeout(() => {
+                    e.target.style.animation = '';
+                }, 10);
+            }
+        });
+    </script>
+</body>
+</html>

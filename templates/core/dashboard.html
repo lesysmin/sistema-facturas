@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard Principal{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- Header de Bienvenida -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4 dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                            Dashboard Principal
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Bienvenido, <strong>{{ user.get_full_name|default:user.username }}</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge bg-primary fs-6">{{ user.get_tipo_usuario_display }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal: Estadísticas y Gráfica -->
+    <div class="row">
+        <!-- Columna Izquierda: Estadísticas (2 arriba, 2 abajo) -->
+        <div class="col-lg-6 mb-4">
+            <div class="row h-100">
+                <!-- Fila Superior: 2 cuadros -->
+                <div class="col-md-6 mb-3">
+                    <a href="{% url 'solicitudes:lista_solicitudes' %}" class="card-link">
+                    <div class="card-dashboard p-4 text-center h-100">
+                        <div class="text-primary mb-3">
+                            <i class="fas fa-file-invoice-dollar fa-3x"></i>
+                        </div>
+                        <h3 class="mb-2">{{ total_solicitudes|default:"0" }}</h3>
+                        <p class="text-muted mb-0">Solicitudes Totales</p>
+                    </div>
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card-dashboard p-4 text-center h-100">
+                        <div class="text-success mb-3">
+                            <i class="fas fa-check-circle fa-3x"></i>
+                        </div>
+                        <h3 class="mb-2">{{ solicitudes_aceptadas|default:"0" }}</h3>
+                        <p class="text-muted mb-0">Solicitudes Aceptadas</p>
+                    </div>
+                </div>
+                
+                <!-- Fila Inferior: 2 cuadros -->
+                <div class="col-md-6 mb-3">
+                    <div class="card-dashboard p-4 text-center h-100">
+                        <div class="text-danger mb-3">
+                            <i class="fas fa-times-circle fa-3x"></i>
+                        </div>
+                        <h3 class="mb-2">{{ solicitudes_rechazadas|default:"0" }}</h3>
+                        <p class="text-muted mb-0">Solicitudes Rechazadas</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card-dashboard p-4 text-center h-100">
+                        <div class="text-warning mb-3">
+                            <i class="fas fa-clock fa-3x"></i>
+                        </div>
+                        <h3 class="mb-2">{{ solicitudes_proceso|default:"0" }}</h3>
+                        <p class="text-muted mb-0">En Proceso</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Gráfica -->
+        <div class="col-lg-6 mb-4">
+            <div class="card-dashboard h-100">
+                <div class="p-3 border-bottom">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Resumen de Solicitudes
+                    </h5>
+                </div>
+                <div class="p-4">
+                    <canvas id="solicitudesBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('solicitudesBarChart');
+    
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Totales', 'Aceptadas', 'Rechazadas', 'En Proceso'],
+                datasets: [{
+                    label: 'Cantidad de Solicitudes',
+                    data: [
+                        {{ total_solicitudes|default:0 }},
+                        {{ solicitudes_aceptadas|default:0 }},
+                        {{ solicitudes_rechazadas|default:0 }},
+                        {{ solicitudes_proceso|default:0 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(26, 61, 194, 0.8)',    // Azul principal
+                        'rgba(39, 174, 96, 0.8)',    // Verde éxito
+                        'rgba(231, 76, 60, 0.8)',    // Rojo peligro
+                        'rgba(243, 156, 18, 0.8)'    // Amarillo warning
+                    ],
+                    borderColor: [
+                        'rgba(26, 61, 194, 1)',
+                        'rgba(39, 174, 96, 1)',
+                        'rgba(231, 76, 60, 1)',
+                        'rgba(243, 156, 18, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Solicitudes: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cantidad de Solicitudes'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Estado de Solicitudes'
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
+<style>
+.card-dashboard {
+    background: var(--white);
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.card-dashboard:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.dashboard-header {
+    border-left: 4px solid var(--primary-blue);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content-area {
+        padding: 1rem;
+    }
+    
+    .card-dashboard {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
