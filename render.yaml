@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py collectstatic --noinput
+      python manage.py collectstatic --noinput --clear
     startCommand: |
       python manage.py migrate
       gunicorn sistema_facturas.wsgi:application

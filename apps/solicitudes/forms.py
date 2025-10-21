@@ -20,7 +20,7 @@ class SolicitudCompraForm(forms.ModelForm):
             'analitica': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'MX1234567',
-                'pattern': 'MX\d{7}',
+                'pattern': r'MX\d{7}',
                 'title': 'Formato: MX seguido de 7 numeros',
                 'autocomplete': 'off'
             }),
