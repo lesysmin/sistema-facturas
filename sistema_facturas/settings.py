@@ -196,33 +196,3 @@ if DEBUG:
     print(f"✅ Debug: {DEBUG}")
     print(f"✅ User Model: {AUTH_USER_MODEL}")
 
-# =============================================
-# 14. CONFIGURACIÓN WHITENOISE - PRODUCCIÓN
-# =============================================
-
-# Configuración WhiteNoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Para archivos con espacios en nombres (IMPORTANTE)
-WHITENOISE_KEEP_ONLY_HASHED_FILES = False
-
-# Configuración adicional para WhiteNoise
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_ALLOW_ALL_ORIGINS = True
-
-# Logs para debug en producción
-if not DEBUG:
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
-        },
-        'root': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-    }
