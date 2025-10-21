@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: sistema-facturas
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput --clear
+    startCommand: |
+      python manage.py migrate
+      gunicorn sistema_facturas.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        value: "django-insecure-o(nqs=bm)=5gex1xhk6swkk3kb48ld)*k(sxj5p2u7#7r@#&l9"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DJANGO_ENV
+        value: "production"
+      - key: DB_ENGINE
+        value: "django.db.backends.sqlite3"
+      - key: DB_NAME
+        value: "db.sqlite3"
