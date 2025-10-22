@@ -6,9 +6,6 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import sys
-# Crear superusuario si no existe
-from django.contrib.auth import get_user_model
-from django.db import connections
 
 # =============================================
 # 1. CARGA DE VARIABLES DE ENTORNO
@@ -203,14 +200,3 @@ if DEBUG:
     print(f"✅ Debug: {DEBUG}")
     print(f"✅ User Model: {AUTH_USER_MODEL}")
 
-# Esperar a que la base de datos esté lista
-for conn in connections.all():
-    if conn.is_usable():
-        User = get_user_model()
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser(
-                username='admin', 
-                email='admin@revergy.com',
-                password='Admin123!'
-            )
-        break
