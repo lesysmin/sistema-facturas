@@ -17,14 +17,27 @@
                     <div class="col-md-8">
                         <h2 class="mb-2">
                             <i class="fas fa-file-alt text-primary me-2"></i>
+                            {% if user.tipo_usuario == 'jefe_proyectos' %}
+                            Solicitudes de Compra
+                            {% else %}
                             Mis Solicitudes de Compra
+                            {% endif %}
                         </h2>
-                        <p class="text-muted mb-0">Gestiona todas tus solicitudes de compra creadas</p>
+                        <p class="text-muted mb-0">
+                            {% if user.tipo_usuario == 'jefe_proyectos' %}
+                            Gestiona todas las solicitudes de compra creadas
+                            {% else %}
+                            Gestiona todas tus solicitudes de compra creadas
+                            {% endif %}
+                        </p>
                     </div>
                     <div class="col-md-4 text-md-end">
+                        <!-- Solo mostrar botón para solicitantes, no para jefes de proyecto -->
+                        {% if user.tipo_usuario != 'jefe_proyectos' %}
                         <a href="{% url 'solicitudes:crear_solicitud' %}" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus-circle me-2"></i>Nueva Solicitud
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -86,7 +99,12 @@
             <div class="card-dashboard">
                 <div class="card-header border-bottom">
                     <h5 class="mb-0">
-                        <i class="fas fa-list me-2 text-primary"></i>Lista de Solicitudes
+                        <i class="fas fa-list me-2 text-primary"></i>
+                        {% if user.tipo_usuario == 'jefe_proyectos' %}
+                        Lista de Solicitudes del Departamento
+                        {% else %}
+                        Lista de Solicitudes
+                        {% endif %}
                     </h5>
                 </div>
                 
@@ -226,11 +244,26 @@
                     <!-- Estado inicial sin solicitudes -->
                     <div class="text-center py-5 estado-vacio">
                         <div class="text-muted mb-3"><i class="fas fa-file-alt fa-3x"></i></div>
-                        <h5 class="text-muted">No hay solicitudes creadas</h5>
-                        <p class="text-muted mb-4">Comienza creando tu primera solicitud de compra.</p>
+                        <h5 class="text-muted">
+                            {% if user.tipo_usuario == 'jefe_proyectos' %}
+                            No hay solicitudes en el departamento
+                            {% else %}
+                            No hay solicitudes creadas
+                            {% endif %}
+                        </h5>
+                        <p class="text-muted mb-4">
+                            {% if user.tipo_usuario == 'jefe_proyectos' %}
+                            Los solicitantes aún no han creado solicitudes de compra.
+                            {% else %}
+                            Comienza creando tu primera solicitud de compra.
+                            {% endif %}
+                        </p>
+                        <!-- Solo mostrar botón para solicitantes, no para jefes de proyecto -->
+                        {% if user.tipo_usuario != 'jefe_proyectos' %}
                         <a href="{% url 'solicitudes:crear_solicitud' %}" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus-circle me-2"></i>Crear Primera Solicitud
                         </a>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>
