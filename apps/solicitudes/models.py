@@ -106,60 +106,9 @@ class SolicitudCompra(models.Model):
     
     def __str__(self):
         return f"{self.numero_sc} - {self.solicitante.get_full_name()}"
-    
-    @property
-    def total_items(self):
-        """Calcular el total sumando todos los items"""
-        return sum(item.precio_total for item in self.items.all())
-    
-    @property
-    def cantidad_items(self):
-        """Obtener la cantidad de items en la solicitud"""
-        return self.items.count()
 
     def get_codificacion_display_full(self):
         """Obtener la descripción completa de la codificación"""
         return dict(self.CODIFICACION_CHOICES).get(self.codificacion, '')
 
-
-class ItemSolicitud(models.Model):
-    solicitud = models.ForeignKey(SolicitudCompra, on_delete=models.CASCADE, related_name='items')
-    
-    descripcion = models.CharField(
-        max_length=200, 
-        verbose_name="Descripcion del Item",
-        help_text="Descripcion detallada del producto o servicio"
-    )
-    
-    cantidad = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        verbose_name="Cantidad",
-        help_text="Cantidad requerida"
-    )
-    
-    precio_unitario = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        verbose_name="Precio Unitario",
-        help_text="Precio por unidad"
-    )
-    
-    precio_total = models.DecimalField(
-        max_digits=12, 
-        decimal_places=2, 
-        verbose_name="Precio Total",
-        editable=False  # Se calcula automaticamente
-    )
-    
-    class Meta:
-        verbose_name = "Item de Solicitud"
-        verbose_name_plural = "Items de Solicitud"
-    
-    def save(self, *args, **kwargs):
-        # Calcular automaticamente el precio total
-        self.precio_total = self.cantidad * self.precio_unitario
-        super().save(*args, **kwargs)
-    
-    def __str__(self):
-        return f"{self.descripcion} - {self.cantidad} x ${self.precio_unitario}"
+# ELIMINAR COMPLETAMENTE LA CLASE ItemSolicitud

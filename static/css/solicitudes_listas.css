@@ -1,22 +1,38 @@
 /* static/css/solicitudes_listas.css */
 /* Estilos compartidos para lista.html y lista_jefe.html */
 
+/* ===== ESTILOS GENERALES PARA TARJETAS ===== */
+.card-dashboard {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    border: 1px solid #e3e6f0;
+    transition: all 0.3s ease;
+}
+
+.card-dashboard:hover {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
 /* ===== ESTILOS GENERALES PARA TABLAS ===== */
 .table th {
     font-weight: 600;
     border-bottom: 2px solid #dee2e6;
     white-space: nowrap;
     background-color: #f8f9fa;
+    color: #4a5568;
+    padding: 1rem 0.75rem;
 }
 
 .table td {
     vertical-align: middle;
     padding: 1rem 0.75rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(13, 110, 253, 0.04);
     transform: translateY(-1px);
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -29,18 +45,31 @@
     font-weight: 500;
     margin: 0 2px;
     transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
 .btn-group-sm .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /* Botones específicos */
-.view-pdf-btn:hover,
-.pdf-download-btn:hover {
-    background-color: #0d6efd;
+.view-pdf-btn {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
     border-color: #0d6efd;
+    color: white;
+}
+
+.view-pdf-btn:hover {
+    background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+    border-color: #0a58ca;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.pdf-download-btn:hover {
+    background-color: #198754;
+    border-color: #198754;
     color: white;
 }
 
@@ -62,108 +91,184 @@
     padding: 0.5rem 0.75rem;
     font-weight: 500;
     border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+/* Badges específicos */
+.priority-badge, 
+.estado-badge, 
+.codificacion-badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    min-width: 70px;
+    text-align: center;
 }
 
 /* Colores de badges */
 .badge.bg-danger { 
     background: linear-gradient(135deg, #dc3545, #c82333) !important; 
+    border-color: #c82333;
 }
 
 .badge.bg-warning { 
     background: linear-gradient(135deg, #ffc107, #e0a800) !important; 
     color: #000 !important; 
+    border-color: #e0a800;
 }
 
 .badge.bg-success { 
     background: linear-gradient(135deg, #198754, #157347) !important; 
+    border-color: #157347;
 }
 
 .badge.bg-primary { 
     background: linear-gradient(135deg, #0d6efd, #0b5ed7) !important; 
+    border-color: #0b5ed7;
 }
 
 .badge.bg-info { 
     background: linear-gradient(135deg, #0dcaf0, #0bb6d6) !important; 
+    border-color: #0bb6d6;
 }
 
 .badge.bg-secondary { 
     background: linear-gradient(135deg, #6c757d, #5c636a) !important; 
+    border-color: #5c636a;
 }
 
 /* ===== ESTILOS PARA ORDENAMIENTO ===== */
 .sortable {
     cursor: pointer;
     user-select: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 .sortable:hover { 
-    color: #0d6efd; 
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}
+
+.sortable i {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.sortable:hover i {
+    opacity: 1;
 }
 
 /* ===== ESTILOS ESPECÍFICOS ===== */
 .analitica-code {
-    font-family: 'Courier New', monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 0.875rem;
-    border: 1px solid #dee2e6;
+    background: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    color: #2d3748;
+}
+
+.descripcion-text {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
 }
 
 .fecha-info { 
-    line-height: 1.2; 
+    line-height: 1.2;
+    min-width: 90px;
+}
+
+.fecha-info .fw-semibold {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.fecha-info small {
+    font-size: 0.75rem;
+    color: #718096;
 }
 
 /* Header especial para validación */
 .header-validacion {
-    background-color: rgba(255, 193, 7, 0.1) !important;
-    border-color: #ffc107 !important;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.05)) !important;
+    border-left: 4px solid #ffc107 !important;
 }
 
 .card-header-validacion {
-    background-color: rgba(255, 193, 7, 0.1) !important;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05)) !important;
+    border-bottom: 2px solid #ffc107 !important;
 }
 
 /* Estados de prioridad */
 .prioridad-alta {
-    background-color: rgba(220, 53, 69, 0.05) !important;
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.08), rgba(220, 53, 69, 0.03)) !important;
+    border-left: 4px solid #dc3545;
 }
 
 .prioridad-alta:hover {
-    background-color: rgba(220, 53, 69, 0.1) !important;
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.12), rgba(220, 53, 69, 0.06)) !important;
 }
 
 /* Estados vacíos */
 .estado-vacio {
-    color: #6c757d;
+    color: #718096;
+    background: #f7fafc;
+    border: 2px dashed #cbd5e0;
+    border-radius: 12px;
 }
 
 .estado-vacio i {
-    opacity: 0.5;
+    opacity: 0.4;
+}
+
+/* Contenedor de filtros */
+.filtros-container {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-left: 4px solid #0d6efd;
+    border-radius: 8px;
 }
 
 /* ===== ESTILOS PARA MODAL PDF ===== */
 .pdf-modal-header {
-    background-color: #0d6efd;
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    border-bottom: none;
 }
 
 .pdf-modal-toolbar {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
 }
 
 .pdf-canvas-container {
     overflow: auto; 
     background: #525659;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ===== ESTILOS PARA FILTROS ===== */
-.filtros-container {
-    background-color: #f8f9fa;
+#pdfCanvas {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+    .card-dashboard {
+        margin: 0.5rem;
+        border-radius: 0.5rem;
+    }
+    
     .table-responsive { 
         font-size: 0.875rem; 
+        border-radius: 0.5rem;
+        overflow: hidden;
     }
     
     .badge { 
@@ -177,8 +282,13 @@
         min-width: 60px; 
     }
     
-    .modal-dialog { 
-        margin: 0.5rem; 
+    .descripcion-text {
+        max-width: 150px;
+    }
+    
+    .analitica-code {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
     }
 }
 
@@ -205,5 +315,52 @@
     
     .btn-group .btn { 
         margin: 1px 0; 
+        border-radius: 4px !important;
     }
+    
+    .filtros-container .row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .filtros-container .col-md-6,
+    .filtros-container .col-md-3 {
+        width: 100%;
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .table-hover tbody tr,
+    .btn-group-sm .btn,
+    .card-dashboard,
+    .sortable {
+        transition: none;
+        transform: none;
+    }
+}
+
+/* Estados de carga */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }

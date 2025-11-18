@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Gestión de Proveedores{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/solicitudes_listas.css' %}">
+<style>
+    .card-header-proveedores {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7) !important;
+        color: white !important;
+    }
+    
+    .btn-proveedores {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+        border-color: #0d6efd;
+        color: white;
+    }
+    
+    .btn-proveedores:hover {
+        background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+        border-color: #0b5ed7;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    /* Optimizaciones para la tabla */
+    .table-responsive {
+        overflow-x: hidden !important;
+    }
+    
+    .table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Anchos optimizados para columnas - RAZÓN SOCIAL MÁS ESTRECHA */
+    .table th:nth-child(1), /* N° Proveedor */
+    .table td:nth-child(1) {
+        width: 12% !important;
+        min-width: 110px;
+    }
+    
+    .table th:nth-child(2), /* Razón Social - MÁS ESTRECHA */
+    .table td:nth-child(2) {
+        width: 15% !important; /* Reducido de 20% a 15% */
+        min-width: 120px; /* Reducido de 150px a 120px */
+        max-width: 150px; /* Reducido de 200px a 150px */
+    }
+    
+    .table th:nth-child(3), /* RFC */
+    .table td:nth-child(3) {
+        width: 11% !important;
+        min-width: 100px;
+    }
+    
+    .table th:nth-child(4), /* Ámbito */
+    .table td:nth-child(4) {
+        width: 9% !important;
+        min-width: 80px;
+    }
+    
+    .table th:nth-child(5), /* Tipo */
+    .table td:nth-child(5) {
+        width: 9% !important;
+        min-width: 80px;
+    }
+    
+    .table th:nth-child(6), /* Contacto */
+    .table td:nth-child(6) {
+        width: 18% !important;
+        min-width: 160px;
+    }
+    
+    .table th:nth-child(7), /* Términos */
+    .table td:nth-child(7) {
+        width: 8% !important;
+        min-width: 70px;
+    }
+    
+    .table th:nth-child(8), /* Estado */
+    .table td:nth-child(8) {
+        width: 8% !important;
+        min-width: 70px;
+    }
+    
+    .table th:nth-child(9), /* Acciones */
+    .table td:nth-child(9) {
+        width: 10% !important;
+        min-width: 90px;
+    }
+    
+    /* Mejoras específicas para Razón Social - MÁS ESTRECHA */
+    .razon-social-cell {
+        max-width: 150px !important; /* Reducido */
+        overflow: hidden !important;
+    }
+    
+    .razon-social-content {
+        font-size: 0.85rem !important; /* Tamaño normal */
+        line-height: 1.3 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        font-weight: 600;
+    }
+    
+    .razon-social-rep {
+        font-size: 0.75rem !important; /* Tamaño normal */
+        line-height: 1.2 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        display: block !important;
+    }
+    
+    /* Mejoras para el contenido de celdas */
+    .table td {
+        vertical-align: middle !important;
+        padding: 0.6rem 0.4rem !important;
+    }
+    
+    .table th {
+        vertical-align: middle !important;
+        padding: 0.75rem 0.4rem !important;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    /* RFC normal */
+    .rfc-code {
+        font-size: 0.8rem !important;
+        padding: 0.2rem 0.4rem !important;
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 0.25rem;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Badges normales */
+    .badge {
+        font-size: 0.75rem !important;
+        padding: 0.4em 0.65em !important;
+        white-space: nowrap;
+    }
+    
+    /* Contacto normal */
+    .contacto-cell {
+        font-size: 0.8rem !important;
+    }
+    
+    .contacto-cell div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+    
+    /* Botones de acción normales */
+    .btn-group-sm > .btn {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Forzar que no haya wrap en ninguna celda */
+    .table td, .table th {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-truck text-primary me-2"></i>
+                            Gestión de Proveedores
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Administra el registro de proveedores para el sistema de compras
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'usuarios:crear_proveedor' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Nuevo Proveedor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros y Búsqueda -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card-dashboard p-3 filtros-container">
+                <form method="get" class="row g-2 align-items-center">
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control border-start-0" 
+                                   placeholder="Buscar por número, razón social, RFC..."
+                                   value="{{ search_query }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="ambito" class="form-select form-select-sm">
+                            <option value="">Todos los ámbitos</option>
+                            <option value="local" {% if ambito_filter == 'local' %}selected{% endif %}>Local</option>
+                            <option value="nacional" {% if ambito_filter == 'nacional' %}selected{% endif %}>Nacional</option>
+                            <option value="internacional" {% if ambito_filter == 'internacional' %}selected{% endif %}>Internacional</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="tipo" class="form-select form-select-sm">
+                            <option value="">Todos los tipos</option>
+                            <option value="bienes" {% if tipo_filter == 'bienes' %}selected{% endif %}>Bienes</option>
+                            <option value="servicios" {% if tipo_filter == 'servicios' %}selected{% endif %}>Servicios</option>
+                            <option value="ambos" {% if tipo_filter == 'ambos' %}selected{% endif %}>Ambos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="activo" class="form-select form-select-sm">
+                            <option value="">Todos los estados</option>
+                            <option value="true" {% if activo_filter == 'true' %}selected{% endif %}>Activos</option>
+                            <option value="false" {% if activo_filter == 'false' %}selected{% endif %}>Inactivos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-filter me-1"></i>Filtrar
+                        </button>
+                    </div>
+                </form>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <span id="resultCount">{{ proveedores|length }}</span> proveedores encontrados
+                            </small>
+                            {% if search_query or ambito_filter or tipo_filter or activo_filter %}
+                            <a href="{% url 'usuarios:lista_proveedores' %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Limpiar filtros
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Proveedores -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-dashboard">
+                <div class="card-header border-bottom card-header-proveedores">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-list me-2"></i>
+                        Lista de Proveedores Registrados
+                        <span class="badge bg-light text-primary ms-2">{{ proveedores|length }}</span>
+                    </h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% if proveedores %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>N° Proveedor</th>
+                                    <th>Razón Social</th>
+                                    <th>RFC</th>
+                                    <th>Ámbito</th>
+                                    <th>Tipo</th>
+                                    <th>Contacto</th>
+                                    <th>Términos</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proveedor in proveedores %}
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary" title="{{ proveedor.numero_proveedor }}">
+                                            {{ proveedor.numero_proveedor }}
+                                        </strong>
+                                    </td>
+                                    <td class="razon-social-cell">
+                                        <div class="razon-social-content" title="{{ proveedor.razon_social }}">
+                                            {{ proveedor.razon_social|truncatechars:20 }}
+                                        </div>
+                                        <small class="text-muted razon-social-rep" title="{{ proveedor.representante_legal }}">
+                                            {{ proveedor.representante_legal|truncatechars:18 }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <code class="rfc-code" title="{{ proveedor.rfc }}">
+                                            {{ proveedor.rfc }}
+                                        </code>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if proveedor.ambito == 'local' %}bg-success
+                                            {% elif proveedor.ambito == 'nacional' %}bg-primary
+                                            {% else %}bg-info text-dark{% endif %}">
+                                            {{ proveedor.get_ambito_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary" title="{{ proveedor.get_tipo_proveedor_display }}">
+                                            {{ proveedor.get_tipo_proveedor_display }}
+                                        </span>
+                                    </td>
+                                    <td class="contacto-cell">
+                                        <div title="{{ proveedor.telefono_contacto }}">
+                                            <i class="fas fa-phone me-1"></i>{{ proveedor.telefono_contacto }}
+                                        </div>
+                                        <div title="{{ proveedor.email_contacto }}">
+                                            <i class="fas fa-envelope me-1"></i>{{ proveedor.email_contacto|truncatechars:20 }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">
+                                            {{ proveedor.terminos_pago }} días
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if proveedor.esta_activo %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Activo
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Inactivo
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{% url 'usuarios:editar_proveedor' proveedor.pk %}" 
+                                               class="btn btn-outline-warning"
+                                               title="Editar proveedor">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{% url 'usuarios:cambiar_estado_proveedor' proveedor.pk %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" 
+                                                        class="btn {% if proveedor.esta_activo %}btn-outline-danger{% else %}btn-outline-success{% endif %}"
+                                                        title="{% if proveedor.esta_activo %}Desactivar{% else %}Activar{% endif %} proveedor">
+                                                    <i class="fas {% if proveedor.esta_activo %}fa-times{% else %}fa-check{% endif %}"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <!-- Estado inicial sin proveedores -->
+                    <div class="text-center py-5">
+                        <div class="text-muted mb-3">
+                            <i class="fas fa-truck fa-3x text-muted"></i>
+                        </div>
+                        <h5 class="text-muted">No hay proveedores registrados</h5>
+                        <p class="text-muted mb-4">
+                            Comienza registrando el primer proveedor en el sistema.
+                        </p>
+                        <a href="{% url 'usuarios:crear_proveedor' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus-circle me-2"></i>Registrar Primer Proveedor
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit para filtros
+    document.querySelectorAll('select[name]').forEach(select => {
+        select.addEventListener('change', function() {
+            this.form.submit();
+        });
+    });
+    
+    // Tooltips para elementos truncados
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

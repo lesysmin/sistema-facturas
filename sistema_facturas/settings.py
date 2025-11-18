@@ -1,7 +1,6 @@
 """
 Configuración para Sistema de Gestión de Facturas.
 """
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -61,6 +60,7 @@ INSTALLED_APPS = [
     'apps.cotizaciones',
     'apps.facturas', 
     'apps.reportes',
+    
 ]
 
 # =============================================
@@ -106,12 +106,24 @@ WSGI_APPLICATION = 'sistema_facturas.wsgi.application'
 # 7. BASE DE DATOS
 # =============================================
 
+# COMENTA o ELIMINA esta sección de PostgreSQL:
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': BASE_DIR / os.getenv('DB_NAME', 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'registro_asistencia_db_5mqw',
+        'USER': 'registro_asistencia_db_5mqw_user',
+        'PASSWORD': '8eEh98pm3qVgo2UmmLvFZpUcTfa0Eg1v',
+        'HOST': 'dpg-d496frh5pdvs73cofn50-a.oregon-postgres.render.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+            'sslrootcert': 'global-bundle.pem',  # Opcional, si Render lo requiere
+        },
+        'CONN_MAX_AGE': 600,  # Mejora rendimiento
     }
 }
+
+# EN SU LUGAR, USA SQLite:
 
 # =============================================
 # 8. AUTENTICACIÓN Y AUTORIZACIÓN

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Registrar Trabajador{% endblock %}
+
+{% block title %}Registrar Trabajador{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/registro_usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4 dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-id-card text-primary me-2"></i>
+                            Registro de Nuevo Trabajador (Recurso)
+                        </h2>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge bg-primary fs-6">{{ user.get_tipo_usuario_display }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-10">
+            <div class="card registration-card">
+                <div class="card-header">
+                    <h4>
+                        <i class="fas fa-address-book me-2"></i>Formulario de Registro
+                    </h4>
+                </div>
+                
+                <div class="card-body" style="padding-top: 1.5rem;">
+                    <form method="post" id="registrationForm" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mb-4" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            
+                            <div class="col-md-6">
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-user"></i>
+                                        Personal
+                                    </div>
+                                    
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                                        {{ form.first_name }}
+                                        {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>{% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                                        {{ form.last_name }}
+                                        {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>{% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-tag"></i>
+                                        Identificación (RFC)
+                                    </div>
+                                    
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.rfc.id_for_label }}" class="form-label">{{ form.rfc.label }}</label>
+                                        {{ form.rfc }}
+                                        {% if form.rfc.help_text %}<small class="form-text text-muted">{{ form.rfc.help_text }}</small>{% endif %}
+                                        {% if form.rfc.errors %}<div class="invalid-feedback d-block">{{ form.rfc.errors.0 }}</div>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-briefcase"></i>
+                                        Laboral
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.puesto.id_for_label }}" class="form-label">{{ form.puesto.label }}</label>
+                                        {{ form.puesto }}
+                                        {% if form.puesto.errors %}<div class="invalid-feedback d-block">{{ form.puesto.errors.0 }}</div>{% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-phone-alt"></i>
+                                        Contacto
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.telefono.id_for_label }}" class="form-label">{{ form.telefono.label }}</label>
+                                        {{ form.telefono }}
+                                        {% if form.telefono.errors %}<div class="invalid-feedback d-block">{{ form.telefono.errors.0 }}</div>{% endif %}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="compact-info">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="fas fa-info-circle text-primary"></i>
+                                </div>
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <strong>Nota:</strong> Este registro es solo para fines de identificación de recursos internos y **no genera credenciales** de acceso al sistema. El RFC debe ser único.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-asterisk text-danger me-1" style="font-size: 0.5rem;"></i>
+                                    Campos obligatorios (Nombre, Apellido, RFC)
+                                </small>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'usuarios:lista_trabajadores' %}" class="btn btn-cancel">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-register">
+                                        <i class="fas fa-save me-1"></i>Guardar Trabajador
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

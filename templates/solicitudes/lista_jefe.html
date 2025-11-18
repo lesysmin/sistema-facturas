@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block page_title %}Validar Solicitudes de Compra - Jefe de Proyectos{% endblock %}
+{% block page_title %}Validar Solicitudes de Compra{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/solicitudes_listas.css' %}">
@@ -9,18 +9,18 @@
 
 {% block content %}
 <div class="container-fluid">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card-dashboard p-4 header-validacion">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-10">
+            <div class="card-dashboard p-4 dashboard-header mb-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h2 class="mb-2">
-                            <i class="fas fa-check-circle text-warning me-2"></i>
-                            Validar Solicitudes de Compra
-                        </h2>
+                        <h3 class="mb-2">
+                            <i class="fas fa-tasks text-warning me-2"></i>
+                            Gestión de Validaciones
+                        </h3>
                         <p class="text-muted mb-0">
-                            <strong>Función: Jefe de Proyectos</strong> - Aprueba o rechaza solicitudes pendientes
+                            Función: Jefe de Proyectos | Aprueba o rechaza solicitudes pendientes
                         </p>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -30,75 +30,71 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Filtros -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card-dashboard p-3 filtros-container">
-                <div class="row g-2 align-items-center">
-                    <div class="col-md-4">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" id="searchInput" class="form-control border-start-0" 
-                                   placeholder="Buscar por número, descripción...">
+            <!-- Filtros -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card-dashboard p-3 filtros-container">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-4">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-search text-muted"></i>
+                                    </span>
+                                    <input type="text" id="searchInput" class="form-control border-start-0" 
+                                           placeholder="Buscar por número, descripción...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filterPrioridad" class="form-select form-select-sm">
+                                    <option value="">Todas las prioridades</option>
+                                    <option value="alta">Alta</option>
+                                    <option value="media">Media</option>
+                                    <option value="baja">Baja</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select id="filterCodificacion" class="form-select form-select-sm">
+                                    <option value="">Todas las codificaciones</option>
+                                    <option value="A">A - EPP. Equipo de protección personal</option>
+                                    <option value="B">B - Equipos LOTO</option>
+                                    <option value="C">C - FORMACIONES</option>
+                                    <option value="D">D - UNIFORMES</option>
+                                    <option value="E">E - GESTIÓN DE PROYECTOS</option>
+                                    <option value="F">F - VEHÍCULOS</option>
+                                    <option value="G">G - GASTOS MÉDICOS EVENTUALES</option>
+                                    <option value="H">H - GASTOS COVID</option>
+                                    <option value="I">I - HERRAMIENTA MENOR</option>
+                                    <option value="J">J - EQUIPO DE MANIOBRA EN MT Y AT</option>
+                                    <option value="K">K - CONSUMIBLES</option>
+                                    <option value="L">L - SERVICIOS</option>
+                                    <option value="M">M - HERRAMIENTA CALIBRADA Y CALIBRACIONES</option>
+                                    <option value="N">N - HERRAMIENTA ESPECIALIZADA</option>
+                                    <option value="O">O - ÚTILES DE IZAJE Y MANIOBRA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="clearFilters" class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="fas fa-times me-1"></i>Limpiar
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="filterPrioridad" class="form-select form-select-sm">
-                            <option value="">Todas las prioridades</option>
-                            <option value="alta">Alta</option>
-                            <option value="media">Media</option>
-                            <option value="baja">Baja</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="filterCodificacion" class="form-select form-select-sm">
-                            <option value="">Todas las codificaciones</option>
-                            <option value="A">A - EPP. Equipo de protección personal</option>
-                            <option value="B">B - Equipos LOTO</option>
-                            <option value="C">C - FORMACIONES</option>
-                            <option value="D">D - UNIFORMES</option>
-                            <option value="E">E - GESTIÓN DE PROYECTOS</option>
-                            <option value="F">F - VEHÍCULOS</option>
-                            <option value="G">G - GASTOS MÉDICOS EVENTUALES</option>
-                            <option value="H">H - GASTOS COVID</option>
-                            <option value="I">I - HERRAMIENTA MENOR</option>
-                            <option value="J">J - EQUIPO DE MANIOBRA EN MT Y AT</option>
-                            <option value="K">K - CONSUMIBLES</option>
-                            <option value="L">L - SERVICIOS</option>
-                            <option value="M">M - HERRAMIENTA CALIBRADA Y CALIBRACIONES</option>
-                            <option value="N">N - HERRAMIENTA ESPECIALIZADA</option>
-                            <option value="O">O - ÚTILES DE IZAJE Y MANIOBRA</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="clearFilters" class="btn btn-outline-secondary btn-sm w-100">
-                            <i class="fas fa-times me-1"></i>Limpiar
-                        </button>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <span id="resultCount">{{ solicitudes|length }}</span> solicitudes pendientes de validación
-                            </small>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <span id="resultCount">{{ solicitudes|length }}</span> solicitudes pendientes de validación
+                                    </small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Lista de Solicitudes -->
-    <div class="row">
-        <div class="col-12">
+            <!-- Lista de Solicitudes -->
             <div class="card-dashboard">
-                <div class="card-header border-bottom card-header-validacion">
+                <div class="p-3 border-bottom card-header-validacion">
                     <h5 class="mb-0">
                         <i class="fas fa-clock me-2 text-warning"></i>
                         Solicitudes Pendientes de Validación
@@ -106,7 +102,7 @@
                     </h5>
                 </div>
                 
-                <div class="card-body p-0">
+                <div class="p-0">
                     {% if solicitudes %}
                     <div class="table-responsive">
                         <table class="table table-hover mb-0" id="solicitudesTable">

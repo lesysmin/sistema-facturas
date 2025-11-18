@@ -1,0 +1,450 @@
+/* login.css */
+
+:root {
+    --primary-blue: #1a3dc2;
+    --dark-blue: #152c8a;
+    --light-blue: #d0e1ff;
+    --light-gray: #f8fafc;
+    --medium-gray: #6b7280;
+    --border-gray: #e5e7eb;
+    --white: #ffffff;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    height: 100%;
+    overflow: auto;
+}
+
+.login-fullscreen {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* Panel Izquierdo */
+.login-info-panel {
+    flex: 1;
+    /* La URL de fondo DEBE manejarse en el HTML si usa la etiqueta estática de Django */
+    /* Para dejarlo en CSS, debería ser una ruta relativa o absoluta directa, pero lo mantendremos en el HTML por uso de {% static %} */
+    color: var(--white);
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    animation: slideInLeft 0.8s ease-out;
+}
+
+/* Patrón de Fondo */
+.background-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background-image: 
+        radial-gradient(circle at 20% 30%, var(--white) 2px, transparent 0),
+        radial-gradient(circle at 80% 70%, var(--white) 2px, transparent 0);
+    background-size: 60px 60px;
+    animation: floatPattern 20s infinite linear;
+}
+
+.login-info-content {
+    max-width: 480px;
+    z-index: 2;
+    position: relative;
+}
+
+.company-logo {
+    margin-bottom: 2rem;
+    text-align: left;
+    animation: float 3s ease-in-out infinite;
+}
+
+.logo-image {
+    max-width: 280px;
+    height: auto;
+    filter: brightness(0) invert(1);
+    display: inline-block; 
+}
+
+.system-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.system-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Panel Derecho - Formulario */
+.login-form-panel {
+    flex: 0 0 500px;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+    position: relative;
+    animation: slideInRight 0.8s ease-out;
+    overflow-y: auto;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 380px;
+    padding: 1rem 0;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-icon:hover {
+    transform: scale(1.05) rotate(5deg);
+    border-color: var(--primary-blue);
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: var(--medium-gray);
+    font-size: 1rem;
+}
+
+/* Campos de formulario con efectos hover */
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.2s; }
+.form-group:nth-child(2) { animation-delay: 0.3s; }
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-blue);
+    margin-bottom: 0.5rem;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.input-container {
+    position: relative;
+}
+
+.form-control {
+    border: 2px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 1.1rem 1.5rem 1.1rem 3rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    height: 56px;
+    width: 100%;
+    background: var(--white);
+}
+
+.form-control:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 4px rgba(26, 61, 194, 0.15);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--medium-gray);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.form-control:focus + .input-icon {
+    color: var(--primary-blue);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus::placeholder {
+    opacity: 0.5;
+    transform: translateX(5px);
+}
+
+/* Botón */
+.btn-login {
+    background: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 1.1rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+    height: 56px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(26, 61, 194, 0.25);
+    animation-delay: 0.4s;
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.btn-login:hover {
+    background: var(--dark-blue);
+    border-color: var(--dark-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(26, 61, 194, 0.35);
+}
+
+.btn-login:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(26, 61, 194, 0.3);
+}
+
+.btn-login::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+    z-index: 0;
+}
+
+.btn-login:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-login i {
+    position: relative;
+    z-index: 1;
+}
+
+/* Alertas */
+.alert {
+    border-radius: 12px;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    animation: shake 0.5s ease-in-out;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.system-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-gray);
+}
+
+.footer-text {
+    color: var(--medium-gray);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Animaciones */
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes floatPattern {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-60px) rotate(360deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive - Media Queries */
+@media (max-width: 1024px) {
+    .login-fullscreen {
+        flex-direction: column;
+    }
+    
+    .login-info-panel {
+        flex: 0 0 auto;
+        padding: 2rem 1.5rem;
+        min-height: 40vh;
+        /* La URL de fondo DEBE manejarse en el HTML si usa la etiqueta estática de Django */
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .login-form-panel {
+        flex: 1;
+        width: 100%;
+        padding: 1.5rem;
+        min-height: 60vh;
+    }
+    
+    .logo-image {
+        max-width: 220px;
+    }
+    
+    .system-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-info-panel {
+        min-height: 35vh;
+        padding: 1.5rem;
+        /* La URL de fondo DEBE manejarse en el HTML si usa la etiqueta estática de Django */
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .login-form-panel {
+        min-height: 65vh;
+        padding: 1.5rem 1rem;
+    }
+    
+    .login-form-container {
+        padding: 0.5rem 0;
+    }
+    
+    .form-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.7rem;
+    }
+
+    .form-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .system-title {
+        font-size: 1.5rem;
+    }
+    
+    .system-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-info-panel {
+        min-height: 30vh;
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(26, 61, 194, 0.95) 0%, rgba(21, 44, 138, 0.95) 100%);
+        /* Se eliminó la imagen de fondo para mejorar el rendimiento en móviles muy pequeños */
+    }
+    
+    .login-form-panel {
+        min-height: 70vh;
+        padding: 1rem;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.3rem;
+    }
+    
+    .form-control {
+        padding: 1rem 1.25rem 1rem 2.5rem;
+        height: 50px;
+    }
+    
+    .btn-login {
+        height: 50px;
+        padding: 1rem 1.5rem;
+    }
+    
+    .system-title {
+        font-size: 1.3rem;
+    }
+    
+    .logo-image {
+        max-width: 180px;
+    }
+}
+
+/* Ajustes de Altura para Móviles */
+@media (max-height: 700px) and (max-width: 768px) {
+    .login-info-panel { min-height: 30vh; padding: 1rem; }
+    .login-form-panel { min-height: 70vh; padding: 1rem; }
+    .login-form-container { padding: 0; }
+    .form-header { margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .system-footer { margin-top: 1rem; padding-top: 1rem; }
+}

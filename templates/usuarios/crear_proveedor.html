@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Registrar Proveedor{% endblock %}
+
+{% block title %}Registrar Proveedor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/registro_usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- Header de Bienvenida (ESTILO EXACTO DEL DASHBOARD) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4 dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-truck text-primary me-2"></i>
+                            Registrar Proveedor
+                        </h2>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge bg-primary fs-6">{{ user.get_tipo_usuario_display }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-10">
+            <div class="card registration-card">
+                <div class="card-header">
+                    <h4>
+                        <i class="fas fa-truck me-2"></i>Formulario de Registro de Proveedor
+                    </h4>
+                </div>
+                
+                <div class="card-body" style="padding-top: 1.5rem;">
+                    <form method="post" id="proveedorForm">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Por favor corrige los siguientes errores:</strong>
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <!-- 2 COLUMNAS CON BOOTSTRAP GRID - MEJOR EQUILIBRADAS -->
+                        <div class="row">
+                            <!-- COLUMNA IZQUIERDA -->
+                            <div class="col-md-6">
+                                <!-- Información Básica -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Información Básica
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_numero_proveedor" class="form-label">Número de Proveedor</label>
+                                        <input type="text" name="numero_proveedor" id="id_numero_proveedor" 
+                                               class="form-control {% if form.numero_proveedor.errors %}is-invalid{% endif %}"
+                                               value="{{ form.numero_proveedor.value|default:'' }}"
+                                               placeholder="PROV-2024-001"
+                                               required>
+                                        {% if form.numero_proveedor.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.numero_proveedor.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">Ejemplo: PROV-2024-001</div>
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_rfc" class="form-label">RFC</label>
+                                        <input type="text" name="rfc" id="id_rfc" 
+                                               class="form-control {% if form.rfc.errors %}is-invalid{% endif %}"
+                                               value="{{ form.rfc.value|default:'' }}"
+                                               placeholder="ABC123456XYZ"
+                                               required>
+                                        {% if form.rfc.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.rfc.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">13 caracteres para personas morales, 12 para físicas</div>
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_razon_social" class="form-label">Razón Social</label>
+                                        <input type="text" name="razon_social" id="id_razon_social" 
+                                               class="form-control {% if form.razon_social.errors %}is-invalid{% endif %}"
+                                               value="{{ form.razon_social.value|default:'' }}"
+                                               required>
+                                        {% if form.razon_social.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.razon_social.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Datos Fiscales -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                        Datos Fiscales
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_cedula_situacion_fiscal" class="form-label">Cédula de Situación Fiscal</label>
+                                        <input type="text" name="cedula_situacion_fiscal" id="id_cedula_situacion_fiscal" 
+                                               class="form-control {% if form.cedula_situacion_fiscal.errors %}is-invalid{% endif %}"
+                                               value="{{ form.cedula_situacion_fiscal.value|default:'' }}"
+                                               required>
+                                        {% if form.cedula_situacion_fiscal.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.cedula_situacion_fiscal.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_direccion_fiscal" class="form-label">Dirección Fiscal</label>
+                                        <textarea name="direccion_fiscal" id="id_direccion_fiscal" 
+                                               class="form-control {% if form.direccion_fiscal.errors %}is-invalid{% endif %}"
+                                               rows="3"
+                                               required>{{ form.direccion_fiscal.value|default:'' }}</textarea>
+                                        {% if form.direccion_fiscal.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.direccion_fiscal.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Cartera de Servicios -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-briefcase"></i>
+                                        Cartera de Servicios
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_ambito" class="form-label">Ámbito de Operación</label>
+                                        <select name="ambito" id="id_ambito" 
+                                               class="form-select {% if form.ambito.errors %}is-invalid{% endif %}"
+                                               required>
+                                            <option value="">Seleccione el ámbito...</option>
+                                            <option value="local" {% if form.ambito.value == 'local' %}selected{% endif %}>Local</option>
+                                            <option value="nacional" {% if form.ambito.value == 'nacional' or not form.ambito.value %}selected{% endif %}>Nacional</option>
+                                            <option value="internacional" {% if form.ambito.value == 'internacional' %}selected{% endif %}>Internacional</option>
+                                        </select>
+                                        {% if form.ambito.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.ambito.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_tipo_proveedor" class="form-label">Tipo de Proveedor</label>
+                                        <select name="tipo_proveedor" id="id_tipo_proveedor" 
+                                               class="form-select {% if form.tipo_proveedor.errors %}is-invalid{% endif %}"
+                                               required>
+                                            <option value="">Seleccione el tipo...</option>
+                                            <option value="bienes" {% if form.tipo_proveedor.value == 'bienes' or not form.tipo_proveedor.value %}selected{% endif %}>Proveedor de Bienes</option>
+                                            <option value="servicios" {% if form.tipo_proveedor.value == 'servicios' %}selected{% endif %}>Proveedor de Servicios</option>
+                                            <option value="ambos" {% if form.tipo_proveedor.value == 'ambos' %}selected{% endif %}>Proveedor de Bienes y Servicios</option>
+                                        </select>
+                                        {% if form.tipo_proveedor.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.tipo_proveedor.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_cartera_servicios" class="form-label">Cartera de Servicios/Productos</label>
+                                        <textarea name="cartera_servicios" id="id_cartera_servicios" 
+                                               class="form-control {% if form.cartera_servicios.errors %}is-invalid{% endif %}"
+                                               rows="3"
+                                               placeholder="Describa los productos o servicios que ofrece...">{{ form.cartera_servicios.value|default:'' }}</textarea>
+                                        {% if form.cartera_servicios.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.cartera_servicios.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">Descripción detallada de los servicios o productos que ofrece</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- COLUMNA DERECHA -->
+                            <div class="col-md-6">
+                                <!-- Representante Legal -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-user-tie"></i>
+                                        Representante Legal
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_representante_legal" class="form-label">Representante Legal</label>
+                                        <input type="text" name="representante_legal" id="id_representante_legal" 
+                                               class="form-control {% if form.representante_legal.errors %}is-invalid{% endif %}"
+                                               value="{{ form.representante_legal.value|default:'' }}"
+                                               required>
+                                        {% if form.representante_legal.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.representante_legal.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_curp_representante" class="form-label">CURP del Representante</label>
+                                        <input type="text" name="curp_representante" id="id_curp_representante" 
+                                               class="form-control {% if form.curp_representante.errors %}is-invalid{% endif %}"
+                                               value="{{ form.curp_representante.value|default:'' }}">
+                                        {% if form.curp_representante.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.curp_representante.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Información Bancaria -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-university"></i>
+                                        Información Bancaria
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_banco" class="form-label">Banco</label>
+                                        <input type="text" name="banco" id="id_banco" 
+                                               class="form-control {% if form.banco.errors %}is-invalid{% endif %}"
+                                               value="{{ form.banco.value|default:'' }}"
+                                               required>
+                                        {% if form.banco.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.banco.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_numero_cuenta" class="form-label">Número de Cuenta</label>
+                                        <input type="text" name="numero_cuenta" id="id_numero_cuenta" 
+                                               class="form-control {% if form.numero_cuenta.errors %}is-invalid{% endif %}"
+                                               value="{{ form.numero_cuenta.value|default:'' }}"
+                                               required>
+                                        {% if form.numero_cuenta.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.numero_cuenta.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_clabe_interbancaria" class="form-label">CLABE Interbancaria</label>
+                                        <input type="text" name="clabe_interbancaria" id="id_clabe_interbancaria" 
+                                               class="form-control {% if form.clabe_interbancaria.errors %}is-invalid{% endif %}"
+                                               value="{{ form.clabe_interbancaria.value|default:'' }}"
+                                               placeholder="18 dígitos">
+                                        {% if form.clabe_interbancaria.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.clabe_interbancaria.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">18 dígitos para transferencias nacionales</div>
+                                    </div>
+                                </div>
+
+                                <!-- Información de Contacto -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-address-book"></i>
+                                        Información de Contacto
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_telefono_contacto" class="form-label">Teléfono de Contacto</label>
+                                        <input type="text" name="telefono_contacto" id="id_telefono_contacto" 
+                                               class="form-control {% if form.telefono_contacto.errors %}is-invalid{% endif %}"
+                                               value="{{ form.telefono_contacto.value|default:'' }}"
+                                               placeholder="555-123-4567"
+                                               required>
+                                        {% if form.telefono_contacto.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.telefono_contacto.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_email_contacto" class="form-label">Email de Contacto</label>
+                                        <input type="email" name="email_contacto" id="id_email_contacto" 
+                                               class="form-control {% if form.email_contacto.errors %}is-invalid{% endif %}"
+                                               value="{{ form.email_contacto.value|default:'' }}"
+                                               required>
+                                        {% if form.email_contacto.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.email_contacto.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    
+                                </div>
+
+                                <!-- Términos y Estado -->
+                                <div class="form-section mb-4">
+                                    <div class="section-title">
+                                        <i class="fas fa-cog"></i>
+                                        Términos y Estado
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="id_terminos_pago" class="form-label">Términos de Pago</label>
+                                        <input type="number" name="terminos_pago" id="id_terminos_pago" 
+                                               class="form-control {% if form.terminos_pago.errors %}is-invalid{% endif %}"
+                                               value="{{ form.terminos_pago.value|default:'30' }}"
+                                               required>
+                                        {% if form.terminos_pago.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.terminos_pago.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">Días para pago</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-check form-switch mt-3">
+                                            <input class="form-check-input" type="checkbox" name="esta_activo" 
+                                                   id="id_esta_activo" {% if form.esta_activo.value or not form.esta_activo.value %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="id_esta_activo">
+                                                Proveedor Activo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información compacta -->
+                        <div class="compact-info mt-4">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="fas fa-info-circle text-primary"></i>
+                                </div>
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <strong>Nota:</strong> Todos los campos marcados con asterisco (<span class="text-danger">*</span>) son obligatorios. 
+                                        La información proporcionada será utilizada para procesos de compra y pagos.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="action-buttons mt-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-asterisk text-danger me-1" style="font-size: 0.5rem;"></i>
+                                    Campos obligatorios
+                                </small>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'usuarios:lista_proveedores' %}" class="btn btn-cancel">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-register">
+                                        <i class="fas fa-save me-1"></i>Registrar Proveedor
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validación de RFC en tiempo real
+        const rfcField = document.querySelector('#id_rfc');
+        
+        if (rfcField) {
+            rfcField.addEventListener('input', function() {
+                const rfc = this.value.toUpperCase().trim();
+                this.value = rfc;
+                
+                if (rfc.length > 0 && (rfc.length !== 12 && rfc.length !== 13)) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+        
+        // Validación de número de proveedor único
+        const numeroProveedorField = document.querySelector('#id_numero_proveedor');
+        
+        if (numeroProveedorField) {
+            numeroProveedorField.addEventListener('input', function() {
+                const numero = this.value.toUpperCase().trim();
+                this.value = numero;
+            });
+        }
+        
+        window.scrollTo(0, 0);
+    });
+</script>
+{% endblock %}

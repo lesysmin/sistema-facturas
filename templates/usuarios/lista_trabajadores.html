@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Lista de Trabajadores{% endblock %}
+
+{% block title %}Trabajadores{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/solicitudes_listas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4 dashboard-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-users-cog text-primary me-2"></i>
+                            Recursos Internos
+                        </h2>
+                        <p class="text-muted mb-0">Gestión de la plantilla de trabajadores registrados por RH.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'usuarios:crear_trabajador' %}" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="fas fa-plus me-1"></i> Registrar Trabajador
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white pt-3 pb-2 border-bottom-0">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="mb-0">
+                                Total de Trabajadores: <span class="badge bg-secondary">{{ trabajadores|length }}</span>
+                            </h5>
+                        </div>
+                        <div class="col-md-6">
+                            <form method="get" action="{% url 'usuarios:lista_trabajadores' %}" class="d-flex">
+                                <input type="text" name="search" class="form-control me-2" placeholder="Buscar por Nombre, RFC o Puesto..." value="{{ search_query|default:'' }}">
+                                <button class="btn btn-outline-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                {% if search_query %}
+                                    <a href="{% url 'usuarios:lista_trabajadores' %}" class="btn btn-outline-secondary ms-2" title="Limpiar Filtro">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% if trabajadores %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th scope="col" class="text-uppercase small">Nombre Completo</th>
+                                    <th scope="col" class="text-uppercase small">RFC</th>
+                                    <th scope="col" class="text-uppercase small">Puesto</th>
+                                    <th scope="col" class="text-uppercase small">Email</th>
+                                    <th scope="col" class="text-uppercase small">Teléfono</th>
+                                    <th scope="col" class="text-uppercase small">Registro</th>
+                                    <th scope="col" class="text-uppercase small">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trabajador in trabajadores %}
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">{{ trabajador.get_full_name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-dark">{{ trabajador.rfc }}</span>
+                                    </td>
+                                    <td>{{ trabajador.puesto }}</td>
+                                    <td>
+                                        {% if trabajador.email %}
+                                            <a href="mailto:{{ trabajador.email }}">{{ trabajador.email }}</a>
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if trabajador.telefono %}
+                                            {{ trabajador.telefono }}
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ trabajador.fecha_registro|date:"d M Y" }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'usuarios:editar_trabajador' pk=trabajador.pk %}" 
+                                           class="btn btn-sm btn-info text-white" 
+                                           title="Editar Trabajador">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted">
+                        <i class="fas fa-exclamation-circle me-1"></i>
+                        No se encontraron trabajadores que coincidan con los criterios de búsqueda.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lógica JS si es necesaria (ej. tooltips)
+    });
+</script>
+{% endblock %}

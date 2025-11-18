@@ -1,5 +1,5 @@
 from django import forms
-from .models import SolicitudCompra, ItemSolicitud
+from .models import SolicitudCompra  
 
 class SolicitudCompraForm(forms.ModelForm):
     class Meta:
@@ -83,3 +83,4 @@ class SolicitudCompraForm(forms.ModelForm):
                 raise forms.ValidationError('La analítica debe tener el formato MX seguido de 7 números. Ejemplo: MX1234567')
                 
         return analitica
+

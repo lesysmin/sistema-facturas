@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Editar Usuarios Solicitantes{% endblock %}
+{% block title %}Editar Solicitante{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/registro_usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+ 
+    <div class="row justify-content-center">
+        <div class="col-12 col-xxl-8">
+            
+            <!-- Header específico de la página - CON BORDE AZUL -->
+            <div class="card-dashboard p-4 dashboard-header mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-2">
+                            <i class="fas fa-user-edit text-warning me-2"></i>
+                            Editar Información del Solicitante
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Función: {{ user.get_tipo_usuario_display }} | Modifica la información del usuario solicitante
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'usuarios:lista_solicitantes' %}" class="btn btn-cancel">
+                            <i class="fas fa-arrow-left me-2"></i> Volver a la Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card registration-card">
+                <div class="card-header">
+                    <h4>
+                        <i class="fas fa-user-edit me-2"></i>Formulario de Edición
+                    </h4>
+                </div>
+                
+                <div class="card-body" style="padding-top: 1.5rem;">
+                    <form method="post" id="editarForm">
+                        {% csrf_token %}
+                        
+                        <!-- 2 COLUMNAS CON BOOTSTRAP GRID -->
+                        <div class="row">
+                            <!-- COLUMNA IZQUIERDA -->
+                            <div class="col-md-6">
+                                <!-- Información de Cuenta -->
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-user-circle"></i>
+                                        Cuenta
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de usuario</label>
+                                        <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" 
+                                               class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                               value="{{ form.username.value|default:'' }}"
+                                               maxlength="150"
+                                               required>
+                                        {% if form.username.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.username.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label">Dirección de correo electrónico</label>
+                                        <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
+                                               class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                               value="{{ form.email.value|default:'' }}"
+                                               required>
+                                        {% if form.email.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.email.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Información Personal -->
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-user"></i>
+                                        Personal
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Nombre</label>
+                                        <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" 
+                                               class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                                               value="{{ form.first_name.value|default:'' }}"
+                                               required>
+                                        {% if form.first_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.first_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group required-field">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Apellido</label>
+                                        <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" 
+                                               class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                               value="{{ form.last_name.value|default:'' }}"
+                                               required>
+                                        {% if form.last_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.last_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- COLUMNA DERECHA -->
+                            <div class="col-md-6">
+                                <!-- Información Laboral -->
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-briefcase"></i>
+                                        Laboral
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.telefono.id_for_label }}" class="form-label">Teléfono</label>
+                                        <input type="text" name="{{ form.telefono.name }}" id="{{ form.telefono.id_for_label }}" 
+                                               class="form-control {% if form.telefono.errors %}is-invalid{% endif %}"
+                                               value="{{ form.telefono.value|default:'' }}">
+                                        {% if form.telefono.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.telefono.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.puesto.id_for_label }}" class="form-label">Puesto</label>
+                                        <input type="text" name="{{ form.puesto.name }}" id="{{ form.puesto.id_for_label }}" 
+                                               class="form-control {% if form.puesto.errors %}is-invalid{% endif %}"
+                                               value="{{ form.puesto.value|default:'' }}">
+                                        {% if form.puesto.errors %}
+                                        <div class="invalid-feedback">
+                                            {{ form.puesto.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Estado -->
+                                <div class="form-section">
+                                    <div class="section-title">
+                                        <i class="fas fa-toggle-on"></i>
+                                        Estado
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="{{ form.esta_activo.name }}" 
+                                                   id="{{ form.esta_activo.id_for_label }}" 
+                                                   {% if form.esta_activo.value %}checked{% endif %}>
+                                            <label class="form-check-label" for="{{ form.esta_activo.id_for_label }}">
+                                                Usuario Activo
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Desactiva esta opción para inhabilitar el acceso del usuario</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="action-buttons">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-asterisk text-danger me-1" style="font-size: 0.5rem;"></i>
+                                    Campos obligatorios
+                                </small>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'usuarios:lista_solicitantes' %}" class="btn btn-cancel">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-register">
+                                        <i class="fas fa-save me-1"></i>Guardar Cambios
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Subir el formulario al cargar
+        window.scrollTo(0, 0);
+        
+        // Eliminar cualquier texto de ayuda que pueda aparecer
+        document.querySelectorAll('.form-text').forEach(el => {
+            el.style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

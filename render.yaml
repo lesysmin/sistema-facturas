@@ -13,7 +13,9 @@ services:
       User = get_user_model()
       if not User.objects.filter(username='admin').exists():
           User.objects.create_superuser('admin', 'admin@revergy.com', 'Admin123!')
-          print('Superusuario creado')
+          print('✅ Superusuario admin creado automáticamente')
+      else:
+          print('✅ Ya existe un superusuario')
       "
       gunicorn sistema_facturas.wsgi:application
     envVars:

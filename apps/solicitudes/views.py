@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import FileResponse, HttpResponseNotFound
 from django.conf import settings
 import os
-from .models import SolicitudCompra, ItemSolicitud
+from .models import SolicitudCompra
 from .forms import SolicitudCompraForm
 from django.utils import timezone
 
@@ -44,20 +44,6 @@ def crear_solicitud(request):
     return render(request, 'solicitudes/crear.html', context)
 
 @login_required
-def detalle_solicitud(request, pk):
-    """Ver detalles de una solicitud"""
-    solicitud = get_object_or_404(SolicitudCompra, pk=pk)
-    
-    # Verificar permisos
-    if (request.user.tipo_usuario == 'solicitante' and 
-        solicitud.solicitante != request.user):
-        messages.error(request, 'No tienes permisos para ver esta solicitud.')
-        return redirect('solicitudes:lista_solicitudes')
-    
-    context = {'solicitud': solicitud}
-    return render(request, 'solicitudes/detalle.html', context)
-
-@login_required
 def ver_pdf(request, pk):
     """Ver PDF de una solicitud"""
     solicitud = get_object_or_404(SolicitudCompra, pk=pk)
@@ -79,13 +65,13 @@ def ver_pdf(request, pk):
                 )
             else:
                 messages.error(request, 'El archivo PDF no se encuentra en el servidor.')
-                return redirect('solicitudes:detalle_solicitud', pk=pk)
+                return redirect('solicitudes:lista_solicitudes')
         except Exception as e:
             messages.error(request, f'Error al abrir el PDF: {str(e)}')
-            return redirect('solicitudes:detalle_solicitud', pk=pk)
+            return redirect('solicitudes:lista_solicitudes')
     else:
         messages.error(request, 'No hay PDF disponible para esta solicitud.')
-        return redirect('solicitudes:detalle_solicitud', pk=pk)
+        return redirect('solicitudes:lista_solicitudes')
 
 @login_required
 def descargar_pdf(request, pk):
@@ -110,13 +96,13 @@ def descargar_pdf(request, pk):
                 return response
             else:
                 messages.error(request, 'El archivo PDF no se encuentra en el servidor.')
-                return redirect('solicitudes:detalle_solicitud', pk=pk)
+                return redirect('solicitudes:lista_solicitudes')
         except Exception as e:
             messages.error(request, f'Error al descargar el PDF: {str(e)}')
-            return redirect('solicitudes:detalle_solicitud', pk=pk)
+            return redirect('solicitudes:lista_solicitudes')
     else:
         messages.error(request, 'No hay PDF disponible para esta solicitud.')
-        return redirect('solicitudes:detalle_solicitud', pk=pk)
+        return redirect('solicitudes:lista_solicitudes')
     
 # AGREGAR ESTAS VISTAS AL FINAL DE TU ARCHIVO ACTUAL
 
@@ -215,3 +201,20 @@ def rechazar_solicitud(request, **kwargs):
         return redirect('solicitudes:validar_solicitudes')
     
     return redirect('solicitudes:validar_solicitudes')
+
+@login_required
+def lista_solicitudes_validadas(request):
+    # Verificar que el usuario sea jefe de compras
+    if request.user.tipo_usuario != 'jefe_compras':
+        messages.error(request, 'No tienes permisos para acceder a esta función.')
+        return redirect('solicitudes:lista_solicitudes')
+    
+    # Solo mostrar estados validados para compras
+    solicitudes = SolicitudCompra.objects.filter(
+        estado__in=['aprobada', 'cotizacion', 'completada']
+    ).order_by('-fecha_creacion')
+    
+    context = {
+        'solicitudes': solicitudes,
+    }
+    return render(request, 'solicitudes/solicitudes_validadas.html', context)

@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_title %}Solicitudes Validadas - Compras{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/solicitudes_listas.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-dashboard p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Solicitudes Validadas para Compras
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Gestiona todas las solicitudes aprobadas para procesar en compras
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros y Búsqueda -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card-dashboard p-3 filtros-container">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control border-start-0" 
+                                   placeholder="Buscar por número, descripción...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="filterEstado" class="form-select form-select-sm">
+                            <option value="">Todos los estados</option>
+                            <option value="aprobada">Aprobada</option>
+                            <option value="cotizacion">En Cotización</option>
+                            <option value="completada">Completada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="filterPrioridad" class="form-select form-select-sm">
+                            <option value="">Todas las prioridades</option>
+                            <option value="alta">Alta</option>
+                            <option value="media">Media</option>
+                            <option value="baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <span id="resultCount">{{ solicitudes|length }}</span> solicitudes encontradas
+                            </small>
+                            <button id="clearFilters" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Limpiar filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Solicitudes -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-dashboard">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2 text-success"></i>
+                        Lista de Solicitudes Validadas
+                    </h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    {% if solicitudes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="solicitudesTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="sortable" data-sort="numero">Número SC <i class="fas fa-sort ms-1"></i></th>
+                                    <th class="sortable" data-sort="prioridad">Prioridad <i class="fas fa-sort ms-1"></i></th>
+                                    <th>Codificación</th>
+                                    <th>Analítica</th>
+                                    <th>Descripción</th>
+                                    <th class="sortable" data-sort="estado">Estado <i class="fas fa-sort ms-1"></i></th>
+                                    <th class="sortable" data-sort="fecha">Fecha Creación <i class="fas fa-sort ms-1"></i></th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for solicitud in solicitudes %}
+                                <tr class="solicitud-item {% if solicitud.prioridad == 'alta' %}prioridad-alta{% endif %}" 
+                                    data-numero="{{ solicitud.numero_sc|lower }}"
+                                    data-descripcion="{{ solicitud.descripcion|lower }}"
+                                    data-estado="{{ solicitud.estado }}"
+                                    data-prioridad="{{ solicitud.prioridad }}"
+                                    data-fecha="{{ solicitud.fecha_creacion|date:'Y-m-d H:i:s' }}">
+                                   
+                                    <td><strong class="text-primary">{{ solicitud.numero_sc }}</strong></td>
+                                    
+                                    <td>
+                                        {% with badge_class=solicitud.prioridad|default:'baja' %}
+                                        {% if badge_class == 'alta' %}
+                                        <span class="badge bg-danger priority-badge">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Alta
+                                        </span>
+                                        {% elif badge_class == 'media' %}
+                                        <span class="badge bg-warning text-dark priority-badge">
+                                            <i class="fas fa-exclamation-circle me-1"></i>Media
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-success priority-badge">
+                                            <i class="fas fa-info-circle me-1"></i>Baja
+                                        </span>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    
+                                    <td>
+                                        <span class="badge bg-primary codificacion-badge" 
+                                              data-bs-toggle="tooltip" 
+                                              title="{{ solicitud.get_codificacion_display }}">
+                                            {{ solicitud.codificacion }}
+                                        </span>
+                                    </td>
+                                    
+                                    <td>
+                                        <code class="analitica-code bg-light px-2 py-1 rounded border">
+                                            {{ solicitud.analitica }}
+                                        </code>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="descripcion-text" 
+                                             data-bs-toggle="tooltip" 
+                                             title="{{ solicitud.descripcion }}">
+                                            {{ solicitud.descripcion|truncatewords:8 }}
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        {% with estado=solicitud.estado|default:'aprobada' %}
+                                        {% if estado == 'aprobada' %}
+                                        <span class="badge bg-success estado-badge">
+                                            <i class="fas fa-check-circle me-1"></i>Aprobada
+                                        </span>
+                                        {% elif estado == 'cotizacion' %}
+                                        <span class="badge bg-info estado-badge">
+                                            <i class="fas fa-file-invoice-dollar me-1"></i>En Cotización
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary estado-badge">
+                                            <i class="fas fa-check-double me-1"></i>Completada
+                                        </span>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="fecha-info">
+                                            <div class="fw-semibold">{{ solicitud.fecha_creacion|date:"d/m/Y" }}</div>
+                                            <small class="text-muted">{{ solicitud.fecha_creacion|date:"H:i" }}</small>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            
+                                            <!-- Botón Ver PDF -->
+                                            {% if solicitud.archivo_pdf %}
+                                            <button class="btn btn-primary view-pdf-btn"
+                                                    title="Visualizar PDF"
+                                                    data-pdf-url="{% url 'solicitudes:ver_pdf' solicitud.pk %}"
+                                                    data-solicitud-numero="{{ solicitud.numero_sc }}">
+                                                <i class="fas fa-file-pdf me-1"></i>PDF
+                                            </button>
+                                            {% else %}
+                                            <span class="btn btn-outline-secondary" title="No hay PDF disponible">
+                                                <i class="fas fa-file-pdf me-1"></i>Sin PDF
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Estado vacío cuando no hay resultados -->
+                    <div id="noResults" class="text-center py-5 d-none estado-vacio">
+                        <div class="text-muted mb-3"><i class="fas fa-search fa-3x"></i></div>
+                        <h5 class="text-muted">No se encontraron resultados</h5>
+                        <p class="text-muted">Intenta con otros términos de búsqueda o filtros.</p>
+                        <button id="resetSearch" class="btn btn-outline-primary">
+                            <i class="fas fa-times me-1"></i>Limpiar búsqueda
+                        </button>
+                    </div>
+                    
+                    {% else %}
+                    <!-- Estado inicial sin solicitudes -->
+                    <div class="text-center py-5 estado-vacio">
+                        <div class="text-muted mb-3"><i class="fas fa-check-circle fa-3x text-success"></i></div>
+                        <h5 class="text-muted">No hay solicitudes validadas</h5>
+                        <p class="text-muted mb-4">
+                            No hay solicitudes aprobadas disponibles en este momento.
+                        </p>
+                        <a href="{% url 'solicitudes:validar_solicitudes' %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-tasks me-2"></i>Revisar Pendientes
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Visualizar PDF -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white pdf-modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">
+                    <i class="fas fa-file-pdf me-2"></i>Visualizar PDF - <span id="modalSolicitudNumero"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center bg-light py-2 border-bottom pdf-modal-toolbar">
+                    <div class="btn-group ms-2">
+                        <button class="btn btn-outline-primary btn-sm" id="prevPage">
+                            <i class="fas fa-chevron-left me-1"></i>Anterior
+                        </button>
+                        <span class="btn btn-outline-dark btn-sm disabled">
+                            Página: <span id="pageNum">1</span> / <span id="pageCount">0</span>
+                        </span>
+                        <button class="btn btn-outline-primary btn-sm" id="nextPage">
+                            Siguiente <i class="fas fa-chevron-right ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group me-2">
+                        <a href="#" class="btn btn-outline-success btn-sm pdf-download-btn" id="downloadFromModal" download>
+                            <i class="fas fa-download me-1"></i>Descargar
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cerrar
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-grow-1 pdf-canvas-container">
+                    <canvas id="pdfCanvas" class="d-block mx-auto my-3 shadow"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Incluir PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="{% static 'js/solicitudes_listas.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tooltips
+    const tooltips = [...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(
+        el => new bootstrap.Tooltip(el)
+    );
+
+    // Verificar que los elementos necesarios existan antes de inicializar
+    const hasSolicitudes = document.querySelector('.solicitud-item') !== null;
+    const hasTable = document.getElementById('solicitudesTable') !== null;
+    
+    if (hasSolicitudes || hasTable) {
+        console.log('🔄 Inicializando SolicitudesLista para solicitudes_validadas.html...');
+        window.solicitudesLista = new SolicitudesLista({
+            filters: ['estado', 'prioridad']
+        });
+    } else {
+        console.log('ℹ️ No hay solicitudes validadas para inicializar');
+    }
+});
+</script>
+{% endblock %}
